@@ -1,5 +1,7 @@
 import React from 'react';
-import CardList from '../component/CardList';
+import CardList from '../component/CardList/CardList';
+import SearchBox from '../component/SearchBox/SearchBox';
+import HomePage from '../component/HomePage/Home-page';
 import { robots } from '../robots';
 import './App.css';
 
@@ -10,7 +12,9 @@ class App extends React.Component {
     super();
     this.state = {
       searchField: '',
-      robots: robots
+      robots: robots,
+      isSignedIn : true,
+      pages : ""
     }
   }
 
@@ -18,16 +22,29 @@ class App extends React.Component {
     this.setState({ searchField: event.target.value })
   }
 
+  isSignedIn = (event) => {
+    this.setState ({
+      isSignedIn: false })
+  }
+
   render() {
     const filteredRobots = this.state.robots.filter((item) => {
       return item.name.toLowerCase().includes(this.state.searchField.toLowerCase());
     })
+
+    
     return (
       <div className = "App">
-        <h1>Robofriends</h1>
-        <div className = "pa2">
-        <input type ="text" placeholder ="search robots" className ='pa3 ba b--green bg-lightest-blue' onChange = {this.onInputChange}/>
-        </div>
+        <h1 className ="f1">Robofriends</h1>
+        {
+          this.state.isSignedIn ?
+          <HomePage isSignedIn = { this.isSignedIn } /> : null
+        }
+        <SearchBox onInputChange = { this.onInputChange } />
+        {
+          !filteredRobots.length ?
+          <h1>No result found</h1> : null
+        }
         <CardList robots = { filteredRobots } />
       </div>  
     );
